@@ -1,0 +1,33 @@
+% --- Executes on button press in tracesSaveButton.
+function tracesSaveButton_Callback(hObject, eventdata, handles)
+    % =====================================
+    % Open dialog for file selection
+    % =====================================
+    % Use most recently used path from parameters file
+    load('userparam.mat', 'saveFilePath');
+    disp(['using temporary path', saveFilePath]);
+    [filename, pathname] = uiputfile('*.mat', 'Save', saveFilePath);
+    assert(filename ~= 0, 'Bad filename');
+    resultFilePathName = strcat(pathname,filename);
+
+    % Save most recent path to parameters file
+    saveFilePath = pathname;
+    save('userparam.mat', 'saveFilePath', '-append');
+
+    
+    % =====================================
+    % Auto-interpolate x-y and write to file
+    % =====================================
+    if isempty(handles.traceIndices)
+        fprintf("No traces selected - aborting file writing!")
+    else
+        for iTrace = 1:length(handles.traceIndices)
+            
+           
+            
+            tmp.(strcat('trace_', string(iTrace))) = thisTrace;
+            save(resultFilePathName, 'tmp', '-append', ');
+        end
+        
+    end
+end

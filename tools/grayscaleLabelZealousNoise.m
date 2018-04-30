@@ -22,8 +22,8 @@ function cc = grayscaleLabelZealousNoise(imageGray, recombRadius)
     
     for i = 1:cc_reg.NumObjects
         thisIdxList = cc_reg.PixelIdxList{i};
-
-        y = mod(thisIdxList(1), LY);
+        
+        y = mod(thisIdxList(1), LY) + 1;
         x = fix(thisIdxList(1) / LY) + 1;
         color = lm_infl(y, x);
         

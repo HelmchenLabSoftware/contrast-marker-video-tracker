@@ -22,7 +22,7 @@ function varargout = manualEditDialog(varargin)
 
 % Edit the above text to modify the response to help manualEditDialog
 
-% Last Modified by GUIDE v2.5 25-Apr-2018 16:54:07
+% Last Modified by GUIDE v2.5 27-Apr-2018 12:22:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,11 +51,22 @@ function manualEditDialog_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to manualEditDialog (see VARARGIN)
 
-handles.old_list = varargin{1}.old_list;
+% Get variables from parent GUI
+handles.totalframes = varargin{1}.totalframes;
+handles.regioncount = varargin{1}.regioncount;
+handles.processedFrameList = varargin{1}.processedFrameList;
+handles.ProcessedXList = varargin{1}.ProcessedXList;
+handles.ProcessedYList = varargin{1}.ProcessedYList;
+handles.ProcessedMList = varargin{1}.ProcessedMList;
+
+% Call plot function directly on load
+handles.haveTimeMerge = 0;
+manualPlotTypePopupMenu_Callback(hObject, eventdata, handles)
+
 
 % Choose default command line output for manualEditDialog
 % handles.output = hObject;
-handles.output = "EpicWinLol";
+handles.output = "Traces GUI finished";
 
 % Update handles structure
 guidata(hObject, handles);
@@ -80,7 +91,6 @@ varargout{1} = handles.output;
 delete(handles.manualEditDialog1);
 
 
-
 % function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % 
 % if isequal(get(hObject,'waitstatus'),'waiting')
@@ -88,9 +98,6 @@ delete(handles.manualEditDialog1);
 % else
 %     delete(hObject);
 % end
-
-
-
 
 
 % --- Executes during object creation, after setting all properties.
@@ -108,78 +115,6 @@ end
 %set(hObject, 'String', {'plot(rand(5))', 'plot(sin(1:0.01:25))', 'bar(1:.5:10)', 'plot(membrane)', 'surf(peaks)'});
 
 
-% --- Executes on selection change in manualPlotTypePopupMenu.
-function manualPlotTypePopupMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to manualPlotTypePopupMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = get(hObject,'String') returns manualPlotTypePopupMenu contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from manualPlotTypePopupMenu
-
-% fprintf("totalframes=%i \n", handles.totalframes);
-
-%      h = findobj('Tag','MouseTrackingMainGui');
-% 
-%      % if exists (not empty)
-%      if ~isempty(h)
-%         % get handles and other user-defined data associated to Gui1
-%         g1data = guidata(h);
-% 
-%         % maybe you want to set the text in Gui2 with that from Gui1
-%         %lolz = 0
-%         %set(lolz, 'int', get(g1data.totalframes, 'int'));
-%         disp(get(g1data.totalframes, 'int'))
-% 
-%         % maybe you want to get some data that was saved to the Gui1 app
-% %         old_list = getappdata(h, 'old_list');
-%         %lolz = getappdata(h, 'totalframes');
-%         %fprintf("totalframes=%i \n", lolz);
-%      end
-
-    axes(handles.manualTraceAxes);
-    cla;
-
-    popup_sel_index = get(handles.manualPlotTypePopupMenu, 'Value');
-    switch popup_sel_index
-    case 1
-        hold on
-        for iRegOld = 1:length(handles.old_list)
-            plot(handles.old_list{iRegOld}.f, handles.old_list{iRegOld}.x, '-x');
-        end
-        hold off
-        title('X')
-        disp(length(handles.old_list))
-    case 2
-        hold on
-        for iRegOld = 1:length(handles.old_list)
-            plot(handles.old_list{iRegOld}.f, handles.old_list{iRegOld}.y, '-x');
-        end
-        hold off
-        title('Y')
-    case 3
-        hold on
-        for iRegOld = 1:length(handles.old_list)
-            plot(handles.old_list{iRegOld}.f, handles.old_list{iRegOld}.m, '-x');
-        end
-        hold off
-        title('M')
-    end
-    
-    axis tight
-    
-    % popup_sel_index = get(handles.manualPlotTypePopupMenu, 'Value');
-    % switch popup_sel_index
-    %     case 1
-    %         plot(rand(5));
-    %     case 2
-    %         plot(sin(1:0.01:25.99));
-    %     case 3
-    %         bar(1:.5:10);
-    %end
-
-
-
 % --- Executes when user attempts to close manualEditDialog1.
 function manualEditDialog1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to manualEditDialog1 (see GCBO)
@@ -194,3 +129,17 @@ if isequal(get(hObject,'waitstatus'),'waiting')
 else
     delete(hObject);
 end
+
+
+% --- Executes on button press in tracesHardMergeToLeftButton.
+function tracesHardMergeToLeftButton_Callback(hObject, eventdata, handles)
+% hObject    handle to tracesHardMergeToLeftButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in tracesHardMergeToRightButton.
+function tracesHardMergeToRightButton_Callback(hObject, eventdata, handles)
+% hObject    handle to tracesHardMergeToRightButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

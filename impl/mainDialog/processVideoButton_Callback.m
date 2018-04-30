@@ -36,7 +36,7 @@ function processVideoButton_Callback(hObject, eventdata, handles)
     handles.ProcessedXList=[];
     handles.ProcessedYList=[];
     handles.ProcessedMList=[];
-    processedFrameList=[];
+    handles.processedFrameList=[];
 
     % Restart VideoReader to get back to the first frame
     handles.v = VideoReader(handles.pathfilename);
@@ -68,7 +68,7 @@ function processVideoButton_Callback(hObject, eventdata, handles)
         handles.ProcessedMList = vertcat(handles.ProcessedMList, m);
         tmplist = zeros(cc.NumObjects, 1);
         tmplist(:) = length(handles.regioncount);
-        processedFrameList = vertcat(processedFrameList, tmplist);
+        handles.processedFrameList = vertcat(handles.processedFrameList, tmplist);
 
         fprintf('did frame %d of %d, nregionsFound=%d \n', length(handles.regioncount), handles.totalframes, cc.NumObjects);
         
@@ -97,15 +97,15 @@ function processVideoButton_Callback(hObject, eventdata, handles)
 
     figure
     subplot(2,2,1)
-    scatter(processedFrameList, handles.ProcessedXList)
+    scatter(handles.processedFrameList, handles.ProcessedXList)
     title('X')
 
     subplot(2,2,2)
-    scatter(processedFrameList, handles.ProcessedYList)
+    scatter(handles.processedFrameList, handles.ProcessedYList)
     title('Y')
 
     subplot(2,2,3)
-    scatter(processedFrameList, handles.ProcessedMList)
+    scatter(handles.processedFrameList, handles.ProcessedMList)
     title('M')
 
     subplot(2,2,4)

@@ -1,9 +1,9 @@
-% --- Executes on button press in filterRunDialogButton.
-function filterRunDialogButton_Callback(hObject, eventdata, handles)
+% --- Executes on button press in tracesFilterButton.
+function tracesFilterButton_Callback(hObject, eventdata, handles)
 % hObject    handle to filterRunDialogButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    disp("start dialg")
+    disp("start filter dialg")
     filterParam = filterDialog();
     fprintf("Using following parameters to filter:");
     disp(filterParam);
@@ -74,6 +74,7 @@ function filterRunDialogButton_Callback(hObject, eventdata, handles)
     end
     
     % Update handles with new variables
+    handles.haveTimeMerge = 0;
     guidata( hObject, handles);
 
 end
