@@ -6,7 +6,6 @@ Done	0		MATLAB GUI loads video using interface
 Done	0		Implement slider to move between frames during parameter selection
 Done	0		Write video file
 Done	0			Open dialog to save movie. Use filename.
-TODO	0			Show result in GUI while video is written (e.g. every 10 frame) - allow abort when it is obviously junk
 ---------------------------------------------------------
            Preprocess
 ---------------------------------------------------------

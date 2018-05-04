@@ -65,7 +65,7 @@ function [assig, notCol] = assignmentAlgWrapperThresh(M, threshAbs, threshRel)
                 
                 if (min2Row > threshRel * minRow) && (min2Col > threshRel * minRow)
                     
-                    fprintf("thresholding (%d, %d) because %f smaller than (%f; %f) \n", i, minRowArg, minRow, min2Row, min2Col);
+                    %fprintf("thresholding (%d, %d) because %f smaller than (%f; %f) \n", i, minRowArg, minRow, min2Row, min2Col);
                     
                     alreadyAssigned(i) = 1;
                     M(i,:) = inf;

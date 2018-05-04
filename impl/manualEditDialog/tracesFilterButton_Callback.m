@@ -3,78 +3,70 @@ function tracesFilterButton_Callback(hObject, eventdata, handles)
 % hObject    handle to filterRunDialogButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-    disp("start filter dialg")
+    disp("start filter dialog")
     filterParam = filterDialog();
-    fprintf("Using following parameters to filter:");
-    disp(filterParam);
     
     if filterParam.undo == true
-        fprintf("Reverting last filter operation")
-        handles.regioncount = handles.regioncount_old;
-        handles.ProcessedXList = handles.ProcessedXList_Old;
-        handles.ProcessedYList = handles.ProcessedYList_Old;
-        handles.ProcessedMList = handles.ProcessedMList_Old;
-    else
-        nData = length(handles.ProcessedXList);
-        nReg = length(handles.regioncount);
-        nTot = sum(handles.regioncount);
-
-        fprintf("before filter ndata=%d, nROI=%d, nTot=%d \n", nData, nReg, nTot);
-
-
-        % Backup
-        handles.regioncount_old = handles.regioncount;
-        handles.ProcessedXList_Old = handles.ProcessedXList;
-        handles.ProcessedYList_Old = handles.ProcessedYList;
-        handles.ProcessedMList_Old = handles.ProcessedMList;
-
-        nData = length(handles.ProcessedXList);
-        deleteList = zeros(1, nData);
-
-        % Loop over all frames and regions
-        % Determine which ROI fit the filter and mark them for deletion
-        iROICount = 0;
-        for iFrame = 1:length(handles.regioncount)
-            subROICount = 0;
-            for iROIThis = 1:handles.regioncount(iFrame)
-                iROICount = iROICount + 1;
-
-                x = handles.ProcessedXList(iROICount);
-                y = handles.ProcessedYList(iROICount);
-                m = handles.ProcessedMList(iROICount);
-
-                fitX = (~filterParam.useX) || ((x >= filterParam.minX) && (x <= filterParam.maxX));
-                fitY = (~filterParam.useY) || ((y >= filterParam.minY) && (y <= filterParam.maxY));
-                fitM = (~filterParam.useM) || ((m >= filterParam.minM) && (m <= filterParam.maxM));
-
-                if fitX && fitY && fitM
-                    %fprintf("deleting region %d %d %d %d \n", iFrame, x, y, m);
-
-                    subROICount = subROICount + 1;
-                    deleteList(iROICount) = 1;
-                end
-            end
-
-            % Decrease region count per frame, based on number of deleted regions
-            handles.regioncount(iFrame) = handles.regioncount(iFrame) - subROICount;
+        if filterParam.filterType == 1
+            fprintf("Reverting last point-filter operation")
+            handles.regioncount = handles.regioncount_old;
+            handles.ProcessedXList = handles.ProcessedXList_Old;
+            handles.ProcessedYList = handles.ProcessedYList_Old;
+            handles.ProcessedMList = handles.ProcessedMList_Old;
+        else
+            fprintf("Reverting last trace-filter operation")
+            handles.old_list = handles.old_list_old;
         end
+    else
+        if filterParam.filterType == 1
+            fprintf("Performing point-filter with following parameters:");
+            disp(filterParam);
+            
+            % Backup
+            handles.regioncount_old = handles.regioncount;
+            handles.processedFrameList_Old = handles.processedFrameList;
+            handles.ProcessedXList_Old = handles.ProcessedXList;
+            handles.ProcessedYList_Old = handles.ProcessedYList;
+            handles.ProcessedMList_Old = handles.ProcessedMList;
 
-        % Delete regions
-        handles.ProcessedXList(deleteList == 1) = [];
-        handles.ProcessedYList(deleteList == 1) = [];
-        handles.ProcessedMList(deleteList == 1) = [];
+            % Perform filtering
+            filteredData = filterPointData(handles.regioncount, handles.processedFrameList, handles.ProcessedXList, handles.ProcessedYList, handles.ProcessedMList, filterParam);
 
-        nData = length(handles.ProcessedXList);
-        nReg = length(handles.regioncount);
-        nTot = sum(handles.regioncount);
+            % Update filtered data
+            handles.regioncount = filteredData.regCount;
+            handles.processedFrameList = filteredData.fList;
+            handles.ProcessedXList = filteredData.xList;
+            handles.ProcessedYList = filteredData.yList;
+            handles.ProcessedMList = filteredData.mList;
+            
+            handles.haveTimeMerge = 0;
+            
+        else
+            fprintf("Performing trace-filter with following parameters:\n");
+            disp(filterParam);
+            
+            % Backup
+            handles.old_list_old = handles.old_list;
 
-        disp(sum(deleteList))
+            % Perform filtering
+            filteredData = filterTraceData(handles.old_list, filterParam);
 
-        fprintf("after filter ndata=%d, nROI=%d, nTot=%d \n", nData, nReg, nTot);
+            % Update filtered data
+            handles.old_list = filteredData.old_list;
+            
+            % Fill resulting traces into the table
+            tracesFillIntoTable(hObject, eventdata, handles)
+
+            % Store selected table indices, and that the table was created
+            handles.haveTimeMerge = 1;
+            handles.traceIndices = [];
+        end
     end
     
+    % Update plot
+    handles.plotHandles = plotChooseTracesROI(handles);
+    
     % Update handles with new variables
-    handles.haveTimeMerge = 0;
     guidata( hObject, handles);
 
 end

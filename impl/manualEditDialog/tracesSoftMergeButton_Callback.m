@@ -72,15 +72,21 @@ function tracesSoftMergeButton_Callback(hObject, eventdata, handles)
     fprintf("resulting large array length is %i %i \n", length(resultCell.f), length(resultCell.x));
     
     %delete the original traces from storage
-    disp(length(handles.old_list))
+    fprintf("number of traces before %i \n", length(handles.old_list));
     handles.old_list(handles.traceIndices) = [];
-    disp(length(handles.old_list))
+    fprintf("number of traces after %i \n", length(handles.old_list));
     
     %append the merged trace to storage
     handles.old_list{end + 1} = resultCell;
     
-    % Fill data into table
-    tracesFillIntoTable(hObject, eventdata, handles)
+    % Fill resulting traces into the table. Store map from trace to table index
+    handles.idxTrace2Table = tracesFillIntoTable(hObject, eventdata, handles);
+    
+    % After table refill, nothing should be selected
+    handles.traceIndices = [];
+    
+    % Update plot
+    handles.plotHandles = plotChooseTracesROI(handles);
     
     % Save
     guidata(hObject, handles);

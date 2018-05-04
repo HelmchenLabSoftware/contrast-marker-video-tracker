@@ -116,13 +116,16 @@ function tracesTimeMergeButton_Callback(hObject, eventdata, handles)
         handles.old_list{end + 1} = prev_list{iRegPrev};
     end
     
-    
-    % Fill resulting traces into the table
-    tracesFillIntoTable(hObject, eventdata, handles)
+    % Fill resulting traces into the table. Store map from trace to table index
+    handles.idxTrace2Table = tracesFillIntoTable(hObject, eventdata, handles);
     
     % Store selected table indices, and that the table was created
     handles.haveTimeMerge = 1;
     handles.traceIndices = [];
     
+    % Update plot
+    handles.plotHandles = plotChooseTracesROI(handles);
+    
+    % Save data
     guidata( hObject, handles);
 end

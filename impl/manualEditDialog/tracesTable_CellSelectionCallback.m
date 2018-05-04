@@ -8,7 +8,8 @@ function tracesTable_CellSelectionCallback(hObject, eventdata, handles)
     
     %disp(rowIndices)
     
-    plotTracesByParameter(handles, paramIdx, handles.traceIndices)
+    handles.plotHandles = plotTracesByParameter(handles, paramIdx, handles.traceIndices);
     
+    % Save Data
     guidata(hObject, handles);
 end

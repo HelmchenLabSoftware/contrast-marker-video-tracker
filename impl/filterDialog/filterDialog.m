@@ -22,7 +22,7 @@ function varargout = filterDialog(varargin)
 
 % Edit the above text to modify the response to help filterDialog
 
-% Last Modified by GUIDE v2.5 09-Mar-2018 17:17:55
+% Last Modified by GUIDE v2.5 02-May-2018 15:35:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -122,6 +122,8 @@ handles.output.maxX = fix(str2double(get(handles.filterXMaxEdit, 'String')));
 handles.output.maxY = fix(str2double(get(handles.filterYMaxEdit, 'String')));
 handles.output.maxM = fix(str2double(get(handles.filterMMaxEdit, 'String')));
 handles.output.maxT = fix(str2double(get(handles.filterTMaxEdit, 'String')));
+
+handles.output.filterType = get(handles.filterTypePopupMenu, 'Value');
 
 % Update handles structure
 guidata(hObject, handles);
@@ -357,6 +359,7 @@ end
 function undoLastFilterButton_Callback(hObject, eventdata, handles)
 
 handles.output.undo = true;
+handles.output.filterType = get(handles.filterTypePopupMenu, 'Value');
 
 % Update handles structure
 guidata(hObject, handles);
@@ -364,3 +367,25 @@ guidata(hObject, handles);
 % Use UIRESUME instead of delete because the OutputFcn needs
 % to get the updated handles structure.
 uiresume(handles.figure1);
+
+
+% --- Executes during object creation, after setting all properties.
+function filterTypePopupMenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to filterTypePopupMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function filterTypePopupMenu_Callback(hObject, eventdata, handles)
+% hObject    handle to filterTypePopupMenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of filterTypePopupMenu as text
+%        str2double(get(hObject,'String')) returns contents of filterTypePopupMenu as a double

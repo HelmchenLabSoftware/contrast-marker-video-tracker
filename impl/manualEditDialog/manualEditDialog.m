@@ -22,7 +22,7 @@ function varargout = manualEditDialog(varargin)
 
 % Edit the above text to modify the response to help manualEditDialog
 
-% Last Modified by GUIDE v2.5 27-Apr-2018 12:22:24
+% Last Modified by GUIDE v2.5 03-May-2018 13:44:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,10 +59,13 @@ handles.ProcessedXList = varargin{1}.ProcessedXList;
 handles.ProcessedYList = varargin{1}.ProcessedYList;
 handles.ProcessedMList = varargin{1}.ProcessedMList;
 
-% Call plot function directly on load
-handles.haveTimeMerge = 0;
-manualPlotTypePopupMenu_Callback(hObject, eventdata, handles)
+% Obtain first frame for reference
+v = VideoReader(varargin{1}.pathfilename);
+handles.firstFrame = readFrame(v);
 
+% Choose plot type, plot, and get handles to the plots
+handles.haveTimeMerge = 0;
+handles.plotHandles = plotChooseTracesROI(handles);
 
 % Choose default command line output for manualEditDialog
 % handles.output = hObject;
@@ -129,17 +132,3 @@ if isequal(get(hObject,'waitstatus'),'waiting')
 else
     delete(hObject);
 end
-
-
-% --- Executes on button press in tracesHardMergeToLeftButton.
-function tracesHardMergeToLeftButton_Callback(hObject, eventdata, handles)
-% hObject    handle to tracesHardMergeToLeftButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in tracesHardMergeToRightButton.
-function tracesHardMergeToRightButton_Callback(hObject, eventdata, handles)
-% hObject    handle to tracesHardMergeToRightButton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
