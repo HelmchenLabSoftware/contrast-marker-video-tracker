@@ -1,3 +1,5 @@
+**A Matlab contrast based joint tracker. While it worked ok it was clearly outperformed by DeepLabCut and hence discontinued**
+
 Status	CanAuto		Description
 ---------------------------------------------------------
            GUI
